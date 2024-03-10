@@ -63,7 +63,11 @@ class MyWidget(QtWidgets.QWidget):
         super().__init__()
 
         self.new__port = Ports()
-        self.arduino__nano_v3 = serial.Serial('/dev/ttyUSB0', 9600)
+        print("------------")
+        print(self.new__port)
+        print(self.new__port.get__ports())
+        if(self.new__port.get__ports()):
+            self.arduino__nano_v3 = serial.Serial('/dev/ttyUSB0', 9600)
         # self.new__port.get__ports()
         # self.new__port.get__ports_quantities()
         # self.new__port.get__ports_info()
