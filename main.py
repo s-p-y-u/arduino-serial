@@ -1,43 +1,9 @@
-from PySide6 import QtWidgets
+import sys
+from PySide6 import QtCore, QtWidgets, QtGui
 import serial
 import serial.tools.list_ports
 import time
-import sys
-# import glob
 
-
-
-# def serial_ports():
-#  """ Lists serial port names
-#
-#      :raises EnvironmentError:
-#          On unsupported or unknown platforms
-#      :returns:
-#          A list of the serial ports available on the system
-#  """
-#  if sys.platform.startswith('win'):
-#   ports = ['COM%s' % (i + 1) for i in range(256)]
-#  elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-#   # this excludes your current terminal "/dev/tty"
-#   ports = glob.glob('/dev/tty[A-Za-z]*')
-#  elif sys.platform.startswith('darwin'):
-#   ports = glob.glob('/dev/tty.*')
-#  else:
-#   raise EnvironmentError('Unsupported platform')
-#
-#  result = []
-#  for port in ports:
-#   try:
-#    s = serial.Serial(port)
-#    s.close()
-#    result.append(port)
-#   except (OSError, serial.SerialException):
-#    pass
-#  return result
-#
-# speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
-# print(serial_ports())
-# arduino = serial.Serial('COM6', int(speeds[3]))
 
 class Ports:
     speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')    # скорость портов в кортеже
@@ -68,43 +34,107 @@ class Ports:
     def get__speeds(self):
         return Ports.speeds
 
-new__port = Ports()
-print(new__port.get__ports())
-print(new__port.get__ports_quantities())
-print(new__port.get__ports_info())
-print(new__port.get__port_info(0))
-print(new__port.get__speeds())
+# new__port = Ports()
+# print(new__port.get__ports())
+# print(new__port.get__ports_quantities())
+# print(new__port.get__ports_info())
+# print(new__port.get__port_info(0))
+# print(new__port.get__speeds())
 
 
 
-print("Enter 1 to turn ON LED and 0 to turn OFF LED")
-arduino = serial.Serial('COM5', 9600)
-time.sleep(1)
-while 1:
-    datafromUser = input()
-    if datafromUser == '1':
-        arduino.write(b'0,1;')
-        print("LED  turned ON")
-    elif datafromUser == '0':
-        arduino.write(b'0,0;')
-        print("LED turned OFF")
-    elif datafromUser == 'exit':
-        break
+# print("Enter 1 to turn ON LED and 0 to turn OFF LED")
+# arduino = serial.Serial('/dev/ttyUSB0', 9600)
+# time.sleep(1)
+# while 1:
+#     datafromUser = input()
+#     if datafromUser == '1':
+#         arduino.write(b'0,1;')
+#         print("LED  turned ON")
+#     elif datafromUser == '0':
+#         arduino.write(b'0,0;')
+#         print("LED turned OFF")
+#     elif datafromUser == 'exit':
+#         break
 
 
- # # Открываем Serial порт ('COMX' замените на имя вашего порта)
- # ser = serial.Serial('COM6', 9600)
- # # Отправляем строку "Hello, Arduino!" на Arduino, предварительно преобразовав ее в байты
- # ser.write(b'0,1;')
- # # Читаем ответ от Arduino через Serial порт
- # response = ser.readline()
- # # Декодируем ответ из байтов в строку с использованием UTF-8
- # decoded_response = response.decode('utf-8')
- # # Закрываем порт
- # ser.close()
- # print(decoded_response)
+class MyWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
 
-# if __name__ == '__main__':
-#     print_hi('PyCharm')
+        self.new__port = Ports()
+        self.arduino__nano_v3 = serial.Serial('/dev/ttyUSB0', 9600)
+        # self.new__port.get__ports()
+        # self.new__port.get__ports_quantities()
+        # self.new__port.get__ports_info()
+        # self.new__port.get__port_info(0)
+        # self.new__port.get__speeds()
+
+        self.btn__led_2 = QtWidgets.QPushButton("on2")
+        self.btn__led_3 = QtWidgets.QPushButton("on3")
+        self.btn__led_4 = QtWidgets.QPushButton("on4")
+        self.btn__led_5 = QtWidgets.QPushButton("on5")
+        self.btn__led_6 = QtWidgets.QPushButton("on6")
+
+        self.btn__led_8 = QtWidgets.QPushButton("on8")
+        self.btn__led_9 = QtWidgets.QPushButton("on9")
+        self.btn__led_10 = QtWidgets.QPushButton("on10")
+        self.btn__led_11 = QtWidgets.QPushButton("on11")
+
+        self.btn__led_2.setObjectName("2")
+        self.btn__led_3.setObjectName("3")
+        self.btn__led_4.setObjectName("4")
+        self.btn__led_5.setObjectName("5")
+        self.btn__led_6.setObjectName("6")
+
+        self.btn__led_8.setObjectName("8")
+        self.btn__led_9.setObjectName("9")
+        self.btn__led_10.setObjectName("10")
+        self.btn__led_11.setObjectName("11")
+
+        self.text = QtWidgets.QLabel(f"{self.new__port.get__ports_info()}",
+                                     alignment=QtCore.Qt.AlignCenter)
+
+        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.btn__led_2)
+        self.layout.addWidget(self.btn__led_3)
+        self.layout.addWidget(self.btn__led_4)
+        self.layout.addWidget(self.btn__led_5)
+        self.layout.addWidget(self.btn__led_6)
+
+        self.layout.addWidget(self.btn__led_8)
+        self.layout.addWidget(self.btn__led_9)
+        self.layout.addWidget(self.btn__led_10)
+        self.layout.addWidget(self.btn__led_11)
 
 
+        # self.btn__led_1.clicked.connect(lambda: self.on(self.btn__led_1))
+
+        self.btn__led_2.clicked.connect(self.on)
+        self.btn__led_3.clicked.connect(self.on)
+        self.btn__led_4.clicked.connect(self.on)
+        self.btn__led_5.clicked.connect(self.on)
+        self.btn__led_6.clicked.connect(self.on)
+
+        self.btn__led_8.clicked.connect(self.on)
+        self.btn__led_9.clicked.connect(self.on)
+        self.btn__led_10.clicked.connect(self.on)
+        self.btn__led_11.clicked.connect(self.on)
+
+    @QtCore.Slot()
+    def on(self):
+        pin = str(self.sender().objectName())
+        
+        set = f"{pin},1;"
+        self.text.setText(set)
+        self.arduino__nano_v3.write(set.encode('utf-8'))
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+
+    widget = MyWidget()
+    widget.resize(800, 600)
+    widget.show()
+
+    sys.exit(app.exec())
