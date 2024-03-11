@@ -76,37 +76,50 @@ void loop() {
     switch (ints[0]) {
       case 2:
         digitalWrite(led__d2, ints[1]);
+        Serial.print("led__d2");
         break;
       case 3:
         digitalWrite(led__d3, ints[1]);
+        Serial.print("led__d3");
         break;
       case 4:
         digitalWrite(led__d4, ints[1]);
+        Serial.print("led__d4");
         break;
       case 5:
         digitalWrite(led__d5, ints[1]);
+        Serial.print("led__d5");
         break;
       case 6:
         digitalWrite(led__d6, ints[1]);
+        Serial.print("led__d6");
         break;
       case 7:
         digitalWrite(led__d7, ints[1]);
+        Serial.print("led__d7");
         break;
       case 8:
         digitalWrite(led__d8, ints[1]);
+        Serial.print("led__d8");
         break;
       case 9:
         digitalWrite(led__d9, ints[1]);
+        Serial.print("led__d9");
         break;
       case 10:
         digitalWrite(led__d10, ints[1]);
+        Serial.print("led__d10");
         break;
       case 11:
         digitalWrite(led__d11, ints[1]);
+        Serial.print("led__d11");
         break;
       case 12:
         digitalWrite(led__d12, ints[1]);
+        Serial.print("led__d12");
         break;  
     }
   }
+  // delay(1000);
+  // Serial.print("text\r\n");
 }

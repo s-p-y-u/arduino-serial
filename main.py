@@ -1,9 +1,16 @@
 import sys
-from PySide6 import QtCore, QtWidgets, QtGui
+import os
 import serial
 import serial.tools.list_ports
 import time
 
+from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtSerialPort import QSerialPort, QSerialPortInfo
+from PySide6.QtCore import QTimer, QIODevice
+
+
+
+PATH__DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Ports:
     speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')    # скорость портов в кортеже
@@ -62,17 +69,44 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.new__port = Ports()
-        print("------------")
-        print(self.new__port)
-        print(self.new__port.get__ports())
-        if(self.new__port.get__ports()):
-            self.arduino__nano_v3 = serial.Serial('/dev/ttyUSB0', 9600)
-        # self.new__port.get__ports()
-        # self.new__port.get__ports_quantities()
-        # self.new__port.get__ports_info()
-        # self.new__port.get__port_info(0)
-        # self.new__port.get__speeds()
+        self.ports = {}
+        self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
+
+
+        self.serial__ports = QSerialPortInfo.availablePorts()
+        if(self.serial__ports):
+            for portInfo in self.serial__ports:
+                # print("--------------------")
+                # print(f"Port:{portInfo.portName()}")
+                # print(f"Location:{portInfo.systemLocation()}")
+                # print(f"Description:{portInfo.description()}")
+                # print(f"Manufacturer:{portInfo.manufacturer()}")
+                # print(f"Serial number:{portInfo.serialNumber()}")
+                # print("--------------------")
+                
+                self.ports.setdefault(portInfo.portName(), portInfo.systemLocation())
+            # print(self.ports)
+            # print(list(self.ports.keys()))
+            # print(list(self.ports.values()))
+            self.serial = QSerialPort()
+            self.zero__port = list(self.ports.values())
+            self.serial.setBaudRate(9600)
+            self.serial.setPortName(f"{list(self.ports.keys())[0]}")
+            self.serial.open(QIODevice.ReadWrite)
+            self.serial.readyRead.connect(self.ser__read)
+            # self.serial.setDataTerminalReady(True)
+            # i = 0
+            # while(i<20):
+            #     self.serial.readyRead.connect(self.ser__read)
+            #     i+=1
+            #     time.sleep(0.1)
+        
+
+
+        # self.new__port = Ports()
+        # if(self.new__port.get__ports()):
+        #     self.arduino__nano_v3 = serial.Serial('/dev/ttyUSB0', 9600)
+
 
         self.btn__led_2 = QtWidgets.QPushButton("on2")
         self.btn__led_3 = QtWidgets.QPushButton("on3")
@@ -96,8 +130,7 @@ class MyWidget(QtWidgets.QWidget):
         self.btn__led_10.setObjectName("10")
         self.btn__led_11.setObjectName("11")
 
-        self.text = QtWidgets.QLabel(f"{self.new__port.get__ports_info()}",
-                                     alignment=QtCore.Qt.AlignCenter)
+        self.text = QtWidgets.QLabel(f"{self.ports}", alignment=QtCore.Qt.AlignCenter)
 
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self.text)
@@ -126,17 +159,38 @@ class MyWidget(QtWidgets.QWidget):
         self.btn__led_10.clicked.connect(self.on)
         self.btn__led_11.clicked.connect(self.on)
 
+        # self.timer = QTimer()
+        # self.timer.setInterval(500)
+        # self.timer.timeout.connect(self.recurring_timer)
+        # self.timer.start()
+
+    # def recurring_timer(self):
+        # self.serial.readyRead.connect(self.ser__read)
+        # rx = self.serial.readAll()
+        # rxs = str(rx, 'utf-8').strip()
+        # data = rxs.split(',')
+        # print(data)
+        
+
     @QtCore.Slot()
     def on(self):
         pin = str(self.sender().objectName())
-        
-        set = f"{pin},1;"
-        self.text.setText(set)
-        self.arduino__nano_v3.write(set.encode('utf-8'))
+        pin += ",1;"
+        self.text.setText(pin)
+        self.serial.write(pin.encode('utf-8'))
+
+    def ser__read(self):
+        rx = self.serial.readLine()
+        rxs = str(rx, 'utf-8').strip()
+        data = rxs.split(',')
+        print(data)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
-
+    qss__file = QtCore.QFile(rf"{PATH__DIR}/main.qss")
+    qss__file.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text)
+    stream = QtCore.QTextStream(qss__file)
+    app.setStyleSheet(stream.readAll())
     widget = MyWidget()
     widget.resize(800, 600)
     widget.show()
