@@ -28,7 +28,22 @@ QWidget
 	border-color: #000000;
 
 }
+/*-----QComboBox-----*/
+QComboBox
+{
+	background-color: rgb(255,255,255);
+	color: #000000;
+	border-color: #000000;
 
+}
+/*-----QPushButton-----*/
+QPushButton
+{
+	background-color: rgb(255,255,255);
+	color: #000000;
+	border-color: #000000;
+
+}
 
 /*-----QLabel-----*/
 QLabel
