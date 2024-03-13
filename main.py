@@ -48,14 +48,23 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.btn__port_connect)
 
         self.btn__led_2 = QtWidgets.QPushButton("on2")
+        self.btn__led_2.setCheckable(True)
         self.btn__led_3 = QtWidgets.QPushButton("on3")
+        self.btn__led_3.setCheckable(True)
         self.btn__led_4 = QtWidgets.QPushButton("on4")
+        self.btn__led_4.setCheckable(True)
         self.btn__led_5 = QtWidgets.QPushButton("on5")
+        self.btn__led_5.setCheckable(True)
         self.btn__led_6 = QtWidgets.QPushButton("on6")
+        self.btn__led_6.setCheckable(True)
         self.btn__led_8 = QtWidgets.QPushButton("on8")
+        self.btn__led_8.setCheckable(True)
         self.btn__led_9 = QtWidgets.QPushButton("on9")
+        self.btn__led_9.setCheckable(True)
         self.btn__led_10 = QtWidgets.QPushButton("on10")
+        self.btn__led_10.setCheckable(True)
         self.btn__led_11 = QtWidgets.QPushButton("on11")
+        self.btn__led_11.setCheckable(True)
 
         self.btn__led_2.setObjectName("2")
         self.btn__led_3.setObjectName("3")
@@ -116,16 +125,24 @@ class MyWidget(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def on(self):
+        btn__checked = self.sender().isChecked()
         pin = str(self.sender().objectName())
-        pin += ",1;"
-        self.text.setText(pin)
+        match btn__checked:
+            case True:
+                pin += ",1;"         
+            case False:
+                pin += ",0;"
+        print(pin)
         self.serial.write(pin.encode('utf-8'))
+        self.text.setText(f"{pin}")
 
     def ser__read(self):
         rx = self.serial.readLine()
         rxs = str(rx, 'utf-8').strip()
         data = rxs.split(',')
-        print(data)
+        temp__text = self.text.text()
+        self.text.setText(f"{temp__text} -> {data}")
+    
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
