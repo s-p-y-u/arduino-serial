@@ -47,10 +47,10 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.box__ports_speeds)
         self.layout__connect.addWidget(self.btn__port_connect)
 
-        self.btn__led_2 = QtWidgets.QPushButton("on2")
-        self.btn__led_2.setCheckable(True)
-        self.btn__led_3 = QtWidgets.QPushButton("on3")
-        self.btn__led_3.setCheckable(True)
+        self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
+        # self.btn__led_2.setCheckable(True)
+        # self.btn__led_3 = QtWidgets.QPushButton("on3")
+        # self.btn__led_3.setCheckable(True)
         self.btn__led_4 = QtWidgets.QPushButton("on4")
         self.btn__led_4.setCheckable(True)
         self.btn__led_5 = QtWidgets.QPushButton("on5")
@@ -59,22 +59,22 @@ class MyWidget(QtWidgets.QWidget):
         self.btn__led_6.setCheckable(True)
         self.btn__led_8 = QtWidgets.QPushButton("on8")
         self.btn__led_8.setCheckable(True)
-        self.btn__led_9 = QtWidgets.QPushButton("on9")
-        self.btn__led_9.setCheckable(True)
-        self.btn__led_10 = QtWidgets.QPushButton("on10")
-        self.btn__led_10.setCheckable(True)
-        self.btn__led_11 = QtWidgets.QPushButton("on11")
-        self.btn__led_11.setCheckable(True)
+        # self.btn__led_9 = QtWidgets.QPushButton("on9")
+        # self.btn__led_9.setCheckable(True)
+        # self.btn__led_10 = QtWidgets.QPushButton("on10")
+        # self.btn__led_10.setCheckable(True)
+        # self.btn__led_11 = QtWidgets.QPushButton("on11")
+        # self.btn__led_11.setCheckable(True)
 
-        self.btn__led_2.setObjectName("2")
-        self.btn__led_3.setObjectName("3")
+        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
+        # self.btn__led_3.setObjectName("3")
         self.btn__led_4.setObjectName("4")
         self.btn__led_5.setObjectName("5")
         self.btn__led_6.setObjectName("6")
         self.btn__led_8.setObjectName("8")
-        self.btn__led_9.setObjectName("9")
-        self.btn__led_10.setObjectName("10")
-        self.btn__led_11.setObjectName("11")
+        # self.btn__led_9.setObjectName("9")
+        # self.btn__led_10.setObjectName("10")
+        # self.btn__led_11.setObjectName("11")
 
         self.text = QtWidgets.QLabel(f"{self.ports}", alignment=QtCore.Qt.AlignCenter)
 
@@ -84,28 +84,28 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addLayout(self.layout__connect)
         self.layout.addWidget(self.text)
         # self.layout.addWidget(self.color__picker)
-        self.layout.addWidget(self.btn__led_2)
-        self.layout.addWidget(self.btn__led_3)
+        self.layout.addWidget(self.pwm__led_rgbw)
+        # self.layout.addWidget(self.btn__led_3)
         self.layout.addWidget(self.btn__led_4)
         self.layout.addWidget(self.btn__led_5)
         self.layout.addWidget(self.btn__led_6)
 
         self.layout.addWidget(self.btn__led_8)
-        self.layout.addWidget(self.btn__led_9)
-        self.layout.addWidget(self.btn__led_10)
-        self.layout.addWidget(self.btn__led_11)
+        # self.layout.addWidget(self.btn__led_9)
+        # self.layout.addWidget(self.btn__led_10)
+        # self.layout.addWidget(self.btn__led_11)
 
 
-        self.btn__led_2.clicked.connect(self.on)
-        self.btn__led_3.clicked.connect(self.on)
+        self.pwm__led_rgbw.clicked.connect(self.pwm__led_rgbw_set_color)
+        # self.btn__led_3.clicked.connect(self.on)
         self.btn__led_4.clicked.connect(self.on)
         self.btn__led_5.clicked.connect(self.on)
         self.btn__led_6.clicked.connect(self.on)
 
         self.btn__led_8.clicked.connect(self.on)
-        self.btn__led_9.clicked.connect(self.on)
-        self.btn__led_10.clicked.connect(self.on)
-        self.btn__led_11.clicked.connect(self.on)
+        # self.btn__led_9.clicked.connect(self.on)
+        # self.btn__led_10.clicked.connect(self.on)
+        # self.btn__led_11.clicked.connect(self.on)
 
 
     def serial__port_connect(self):
@@ -123,6 +123,26 @@ class MyWidget(QtWidgets.QWidget):
         self.serial.readyRead.connect(self.ser__read)                       #при событии в порте вызываем функцию
         # self.serial.setDataTerminalReady(True)   
 
+    def pwm__led_rgbw_set_color(self):
+        name = str(self.sender().objectName())
+        if(name == "pwm__led_rgbw"):
+            color = QtWidgets.QColorDialog()
+            rgb = color.getColor().getRgb()
+            print(rgb)
+            w = 0
+            r = rgb[0]
+            g = rgb[1]
+            b = rgb[2]
+            if(r == 255 and g == 255 and b == 255):
+                w = 255
+                r = 0
+                g = 0
+                b = 0
+            set__data = f"0,{r},{g},{b},{w},100;"
+            # set__data = f"0,255,255,250,200,100;"    
+            self.serial.write(set__data.encode('utf-8'))
+            self.text.setText(f"{set__data}")
+
     @QtCore.Slot()
     def on(self):
         btn__checked = self.sender().isChecked()
@@ -132,7 +152,6 @@ class MyWidget(QtWidgets.QWidget):
                 pin += ",1;"         
             case False:
                 pin += ",0;"
-        print(pin)
         self.serial.write(pin.encode('utf-8'))
         self.text.setText(f"{pin}")
 
