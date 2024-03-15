@@ -128,7 +128,7 @@ class MyWidget(QtWidgets.QWidget):
         if(name == "pwm__led_rgbw"):
             color = QtWidgets.QColorDialog()
             rgb = color.getColor().getRgb()
-            print(rgb)
+            # print(rgb)
             w = 0
             r = rgb[0]
             g = rgb[1]
@@ -152,15 +152,18 @@ class MyWidget(QtWidgets.QWidget):
                 pin += ",1;"         
             case False:
                 pin += ",0;"
+        # print(pin)
         self.serial.write(pin.encode('utf-8'))
-        self.text.setText(f"{pin}")
+        # self.text.setText(f"{pin}")
 
     def ser__read(self):
         rx = self.serial.readLine()
         rxs = str(rx, 'utf-8').strip()
         data = rxs.split(',')
-        temp__text = self.text.text()
-        self.text.setText(f"{temp__text} -> {data}")
+        # temp__text = self.text.text()
+        # self.text.setText(f"{temp__text} -> {data}")
+        # print(data)
+        self.text.setText(f"{data}")
     
 
 if __name__ == "__main__":

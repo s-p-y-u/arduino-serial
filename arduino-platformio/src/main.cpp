@@ -45,6 +45,8 @@ VIN		Пин питания
 #define led__blue_d11 11
 #define led__d12 12
 
+int brightness = 0;
+int read__d = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -73,19 +75,19 @@ void loop() {
     int ints[24];
     int am = data.parseInts(ints);
     // int am = data.split();
+    Serial.print(ints[0]);
     switch (ints[0]) {
       case 0:
         analogWrite(led__red_d9,ints[1]);
         analogWrite(led__green_d10,ints[2]);
         analogWrite(led__blue_d11,ints[3]);
-        
         analogWrite(led__white_d3,ints[4]);
-        int brightness = ints[5];
-        int res = 0;
-        if(led__red_d9,ints[1]) res = 1;
-        Serial.print(res);
+        brightness = ints[5];
+        // int res = 0;
+        // if(led__red_d9,ints[1]) res = 1;
+        // Serial.print(res);
         break;
-      case 2:
+      case (int)2:
         digitalWrite(led__d2, ints[1]);
         Serial.print("led__d2");
         break;
@@ -99,11 +101,13 @@ void loop() {
         break;
       case 5:
         digitalWrite(led__d5, ints[1]);
-        Serial.print("led__d5");
+        read__d = digitalRead(led__d5);
+        Serial.print(read__d);
         break;
       case 6:
         digitalWrite(led__d6, ints[1]);
-        Serial.print("led__d6");
+        read__d = digitalRead(led__d6);
+        Serial.print(read__d);
         break;
       case 7:
         digitalWrite(led__d7, ints[1]);
@@ -125,9 +129,12 @@ void loop() {
       //   digitalWrite(led__d11, ints[1]);
       //   Serial.print("led__d11");
       //   break;
-      case 12:
+      case (int)12:
         digitalWrite(led__d12, ints[1]);
         Serial.print("led__d12");
+        break;
+      default:
+        Serial.print("default");
         break;  
     }
   }
