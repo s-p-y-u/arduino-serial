@@ -47,50 +47,65 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.box__ports_speeds)
         self.layout__connect.addWidget(self.btn__port_connect)
 
+        self.color__box = QtWidgets.QWidget()
+        self.color__box.setMaximumHeight(90)
+        self.color__layout_v = QtWidgets.QVBoxLayout()
+        self.color__layout_h = QtWidgets.QHBoxLayout()
+        self.color__layout_h2 = QtWidgets.QHBoxLayout()
+        for i in range(16):
+            print(i)
+            i+=1
+            color__btn = QtWidgets.QPushButton(f"{i}")
+            color__btn.setObjectName(f"color №{i}")
+            color__btn.clicked.connect(self.testtt)
+            if(i < 9):            
+                self.color__layout_h.addWidget(color__btn)
+            else:
+                self.color__layout_h2.addWidget(color__btn)
         self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
+        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
+        self.color__layout_h.addWidget(self.pwm__led_rgbw)
+        self.color__layout_v.addLayout(self.color__layout_h)
+        self.color__layout_v.addLayout(self.color__layout_h2)
+        self.color__box.setLayout(self.color__layout_v)
+        # self.color__box.setLayout(self.color__layout_h)
+        # self.color__box.setLayout(self.color__layout_h2)
 
+        self.btn__box = QtWidgets.QWidget()
+        self.btn__box.setMaximumHeight(40)
+        self.btn__layout_h = QtWidgets.QHBoxLayout()
         self.btn__led_4 = QtWidgets.QPushButton("on4")
+        self.btn__led_4.setObjectName("4")
         self.btn__led_4.setCheckable(True)
- 
         self.btn__led_8 = QtWidgets.QPushButton("on8")
+        self.btn__led_8.setObjectName("8")
         self.btn__led_8.setCheckable(True)
         self.btn__led_9 = QtWidgets.QPushButton("on9")
+        self.btn__led_9.setObjectName("9")
         self.btn__led_9.setCheckable(True)
+        self.btn__layout_h.addWidget(self.btn__led_4)
+        self.btn__layout_h.addWidget(self.btn__led_8)
+        self.btn__layout_h.addWidget(self.btn__led_9)
+        self.btn__box.setLayout(self.btn__layout_h)
 
+        self.pwm__box = QtWidgets.QWidget()
+        self.pwm__box.setMaximumHeight(40)
         self.pwm__layout = QtWidgets.QHBoxLayout()
-        self.btn__pwm = QtWidgets.QPushButton("PWM-31.4")
-        self.btn__pwm.setCheckable(True)
+        self.pwm__btn = QtWidgets.QPushButton("PWM-31.4")
+        self.pwm__btn.setObjectName("pwm")
+        self.pwm__btn.setCheckable(True)
         self.pwm__speed_min = QtWidgets.QLabel("80")
         self.pwm__speed_max = QtWidgets.QLabel("255")
         self.pwm__speed_total = QtWidgets.QLabel("80")
-        # self.pwm__speed = QtWidgets.QSpinBox()
-        # self.pwm__speed.setRange(100, 255)
-        # self.pwm__speed.textChanged.connect(self.set__pwm_speed)
-        # self.pwm__speed = QtWidgets.QDial()
-        # self.pwm__speed.setRange(100, 255)
-        # self.pwm__speed.setSingleStep(1)
-        # self.pwm__speed.valueChanged.connect(self.set__pwm_speed)
-
         self.pwm__speed = QtWidgets.QSlider(orientation=QtCore.Qt.Horizontal)
         self.pwm__speed.setRange(80, 255)
-        # self.pwm__speed.sliderReleased.connect(self.set__pwm_speed)
         self.pwm__speed.valueChanged.connect(self.set__pwm_speed)
-        # self.pwm__speed.valueChanged.connect(self.set__pwm_speed_total)
-        self.pwm__layout.addWidget(self.btn__pwm)
+        self.pwm__layout.addWidget(self.pwm__btn)
         self.pwm__layout.addWidget(self.pwm__speed_min)
         self.pwm__layout.addWidget(self.pwm__speed)
         self.pwm__layout.addWidget(self.pwm__speed_max)
         self.pwm__layout.addWidget(self.pwm__speed_total)
-
-        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
-        # self.btn__led_3.setObjectName("3")
-        self.btn__led_4.setObjectName("4")
-        # self.btn__led_5.setObjectName("5")
-        # self.btn__led_6.setObjectName("6")
-        self.btn__led_8.setObjectName("8")
-        self.btn__led_9.setObjectName("9")
-        self.btn__pwm.setObjectName("pwm")
-        # self.btn__led_11.setObjectName("11")
+        self.pwm__box.setLayout(self.pwm__layout)
 
         self.text = QtWidgets.QLabel(f"{self.ports}", alignment=QtCore.Qt.AlignCenter)
 
@@ -100,15 +115,13 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addLayout(self.layout__connect)
         self.layout.addWidget(self.text)
         # self.layout.addWidget(self.color__picker)
-        self.layout.addWidget(self.pwm__led_rgbw)
-        # self.layout.addWidget(self.btn__led_3)
-        self.layout.addWidget(self.btn__led_4)
-        # self.layout.addWidget(self.btn__led_5)
-        # self.layout.addWidget(self.btn__led_6)
-
-        self.layout.addWidget(self.btn__led_8)
-        self.layout.addWidget(self.btn__led_9)
-        self.layout.addLayout(self.pwm__layout)
+        self.layout.addWidget(self.color__box)
+        self.layout.addWidget(self.btn__box)
+        self.layout.addWidget(self.pwm__box)
+        # self.layout.addWidget(self.btn__led_4)
+        # self.layout.addWidget(self.btn__led_8)
+        # self.layout.addWidget(self.btn__led_9)
+        # self.layout.addLayout(self.pwm__layout)
         # self.layout.addWidget(self.btn__led_11)
 
 
@@ -120,7 +133,7 @@ class MyWidget(QtWidgets.QWidget):
 
         self.btn__led_8.clicked.connect(self.on)
         self.btn__led_9.clicked.connect(self.on)
-        self.btn__pwm.clicked.connect(self.set__pwm)
+        self.pwm__btn.clicked.connect(self.set__pwm)
         # self.btn__led_11.clicked.connect(self.on)
 
 
@@ -169,7 +182,7 @@ class MyWidget(QtWidgets.QWidget):
 
     def set__pwm_speed(self):
         self.pwm__speed_total.setText(str(self.pwm__speed.value()))
-        if(self.btn__pwm.isChecked()):
+        if(self.pwm__btn.isChecked()):
             speed = f"10,{self.pwm__speed.value()};"
             self.serial.write(speed.encode('utf-8'))
 
@@ -198,6 +211,8 @@ class MyWidget(QtWidgets.QWidget):
         # print(data)
         self.text.setText(f"{data}")
     
+    def testtt(self):
+        print(self.sender().objectName())
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
