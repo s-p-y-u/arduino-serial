@@ -33,16 +33,18 @@ RES		Пин перезагрузки
 GND		Земля или V-
 VIN		Пин питания
 */
+
+#define led__red_d3 3
+#define led__green_d5 5
+#define led__blue_d6 6
+#define led__white_d11 11
+
 #define led__d2 2
-#define led__white_d3 3
 #define led__d4 4
-#define led__d5 5
-#define led__d6 6
 #define led__d7 7
 #define led__d8 8
-#define led__red_d9 9
-#define led__green_d10 10
-#define led__blue_d11 11
+#define led__d9 9
+#define led__d10 10
 #define led__d12 12
 
 int brightness = 0;
@@ -51,18 +53,21 @@ int read__d = 0;
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(500);
+// Пины D9 и D10 - 31.4 кГц
+  TCCR1A = 0b00000001;  // 8bit
+  TCCR1B = 0b00000001;  // x1 phase correct
+
+  pinMode(led__red_d3, OUTPUT);
+  pinMode(led__green_d5, OUTPUT);
+  pinMode(led__blue_d6, OUTPUT);
+  pinMode(led__white_d11, OUTPUT);
   pinMode(led__d2, OUTPUT);
-  pinMode(led__white_d3, OUTPUT);
   pinMode(led__d4, OUTPUT);
-  pinMode(led__d5, OUTPUT);
-  pinMode(led__d6, OUTPUT);
   pinMode(led__d7, OUTPUT);
   pinMode(led__d8, OUTPUT);
-  pinMode(led__red_d9, OUTPUT);
-  pinMode(led__green_d10, OUTPUT);
-  pinMode(led__blue_d11, OUTPUT);
+  pinMode(led__d9, OUTPUT);
+  pinMode(led__d10, OUTPUT);
   pinMode(led__d12, OUTPUT);
-
 }
 
 void loop() {
@@ -73,63 +78,41 @@ void loop() {
 
     Parser data(str, ',');
     int ints[24];
-    int am = data.parseInts(ints);
+    data.parseInts(ints);
     // int am = data.split();
     Serial.print(ints[0]);
     switch (ints[0]) {
       case 0:
-        analogWrite(led__red_d9,ints[1]);
-        analogWrite(led__green_d10,ints[2]);
-        analogWrite(led__blue_d11,ints[3]);
-        analogWrite(led__white_d3,ints[4]);
+        analogWrite(led__red_d3,ints[1]);
+        analogWrite(led__green_d5,ints[2]);
+        analogWrite(led__blue_d6,ints[3]);
+        analogWrite(led__white_d11,ints[4]);
         brightness = ints[5];
         // int res = 0;
         // if(led__red_d9,ints[1]) res = 1;
         // Serial.print(res);
         break;
-      case (int)2:
+      case 2:
         digitalWrite(led__d2, ints[1]);
         Serial.print("led__d2");
         break;
-      // case 3:
-      //   digitalWrite(led__d3, ints[1]);
-      //   Serial.print("led__d3");
-      //   break;
       case 4:
         digitalWrite(led__d4, ints[1]);
         Serial.print("led__d4");
-        break;
-      case 5:
-        digitalWrite(led__d5, ints[1]);
-        read__d = digitalRead(led__d5);
-        Serial.print(read__d);
-        break;
-      case 6:
-        digitalWrite(led__d6, ints[1]);
-        read__d = digitalRead(led__d6);
-        Serial.print(read__d);
-        break;
-      case 7:
-        digitalWrite(led__d7, ints[1]);
-        Serial.print("led__d7");
         break;
       case 8:
         digitalWrite(led__d8, ints[1]);
         Serial.print("led__d8");
         break;
-      // case 9:
-      //   digitalWrite(led__d9, ints[1]);
-      //   Serial.print("led__d9");
-      //   break;
-      // case 10:
-      //   digitalWrite(led__d10, ints[1]);
-      //   Serial.print("led__d10");
-      //   break;
-      // case 11:
-      //   digitalWrite(led__d11, ints[1]);
-      //   Serial.print("led__d11");
-      //   break;
-      case (int)12:
+      case 9:
+        digitalWrite(led__d9, ints[1]);
+        Serial.print("led__d9");
+        break;
+      case 10:
+        analogWrite(led__d10, ints[1]);
+        // Serial.print("led__d10");
+        break;
+      case 12:
         digitalWrite(led__d12, ints[1]);
         Serial.print("led__d12");
         break;
