@@ -19,8 +19,8 @@ class MyWidget(QtWidgets.QWidget):
 
         self.ports = []
         self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
-        self.color = ['0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
-                      '0,255,255','0,128,128','0,0,255','0,0,128']
+        self.color = ('0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
+                      '0,255,255','0,128,128','0,0,255','0,0,128')
 
         self.serial__ports = QSerialPortInfo.availablePorts()       #получаем информацию о порте
         if(self.serial__ports):
@@ -50,16 +50,16 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.btn__port_connect)
 
         self.color__box = QtWidgets.QWidget()
-        self.color__box.setMaximumHeight(300)
-        self.color__box.setMaximumWidth(300)
+        self.color__box.setMaximumHeight(120)
+        self.color__box.setMaximumWidth(220)
         self.color__grid_layout = QtWidgets.QGridLayout()
         self.color__grid_layout.setVerticalSpacing(0)
         self.color__grid_layout.setHorizontalSpacing(0)
         index = 0
         for row in range(2):
-            for col in range(7):
+            for col in range(6):
                 set__color = self.color[index]
-                color__btn = QtWidgets.QPushButton(f"{index}")
+                color__btn = QtWidgets.QPushButton()
                 color__btn.setObjectName(f"color №{index}")
                 color__btn.clicked.connect(self.testtt)
                 color__btn.setStyleSheet(f"background-color:rgb({set__color});max-width:30px;max-height:30px; border:none; border-radius:3px")
