@@ -19,6 +19,8 @@ class MyWidget(QtWidgets.QWidget):
 
         self.ports = []
         self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
+        self.color = ['0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
+                      '0,255,255','0,128,128','0,0,255','0,0,128']
 
         self.serial__ports = QSerialPortInfo.availablePorts()       #получаем информацию о порте
         if(self.serial__ports):
@@ -39,7 +41,7 @@ class MyWidget(QtWidgets.QWidget):
         self.box__ports_speeds = QtWidgets.QComboBox()
         self.box__ports_speeds.setObjectName("box__ports_speeds")
         self.box__ports_speeds.addItems(self.speeds)
-        self.box__ports_speeds.setCurrentIndex(3)
+        self.box__ports_speeds.setCurrentIndex(7)
         self.btn__port_connect = QtWidgets.QPushButton("Подключение")
         self.btn__port_connect.setObjectName("btn__port_connect")
         self.btn__port_connect.clicked.connect(self.serial__port_connect)
@@ -48,32 +50,29 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.btn__port_connect)
 
         self.color__box = QtWidgets.QWidget()
-        self.color__box.setMaximumHeight(90)
-        self.color__layout_v = QtWidgets.QVBoxLayout()
-        self.color__layout_h = QtWidgets.QHBoxLayout()
-        self.color__layout_h2 = QtWidgets.QHBoxLayout()
-        for i in range(16):
-            print(i)
-            i+=1
-            color__btn = QtWidgets.QPushButton(f"{i}")
-            color__btn.setObjectName(f"color №{i}")
-            color__btn.clicked.connect(self.testtt)
-            if(i < 9):            
-                self.color__layout_h.addWidget(color__btn)
-            else:
-                self.color__layout_h2.addWidget(color__btn)
-        self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
-        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
-        self.color__layout_h.addWidget(self.pwm__led_rgbw)
-        self.color__layout_v.addLayout(self.color__layout_h)
-        self.color__layout_v.addLayout(self.color__layout_h2)
-        self.color__box.setLayout(self.color__layout_v)
-        # self.color__box.setLayout(self.color__layout_h)
-        # self.color__box.setLayout(self.color__layout_h2)
+        self.color__box.setMaximumHeight(300)
+        self.color__box.setMaximumWidth(300)
+        self.color__grid_layout = QtWidgets.QGridLayout()
+        self.color__grid_layout.setVerticalSpacing(0)
+        self.color__grid_layout.setHorizontalSpacing(0)
+        index = 0
+        for row in range(2):
+            for col in range(7):
+                set__color = self.color[index]
+                color__btn = QtWidgets.QPushButton(f"{index}")
+                color__btn.setObjectName(f"color №{index}")
+                color__btn.clicked.connect(self.testtt)
+                color__btn.setStyleSheet(f"background-color:rgb({set__color});max-width:30px;max-height:30px; border:none; border-radius:3px")
+                self.color__grid_layout.addWidget(color__btn, row, col)
+                index += 1
+        self.color__box.setLayout(self.color__grid_layout)
+
 
         self.btn__box = QtWidgets.QWidget()
         self.btn__box.setMaximumHeight(40)
         self.btn__layout_h = QtWidgets.QHBoxLayout()
+        self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
+        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
         self.btn__led_4 = QtWidgets.QPushButton("on4")
         self.btn__led_4.setObjectName("4")
         self.btn__led_4.setCheckable(True)
@@ -83,6 +82,7 @@ class MyWidget(QtWidgets.QWidget):
         self.btn__led_9 = QtWidgets.QPushButton("on9")
         self.btn__led_9.setObjectName("9")
         self.btn__led_9.setCheckable(True)
+        self.btn__layout_h.addWidget(self.pwm__led_rgbw)
         self.btn__layout_h.addWidget(self.btn__led_4)
         self.btn__layout_h.addWidget(self.btn__led_8)
         self.btn__layout_h.addWidget(self.btn__led_9)
@@ -185,9 +185,6 @@ class MyWidget(QtWidgets.QWidget):
         if(self.pwm__btn.isChecked()):
             speed = f"10,{self.pwm__speed.value()};"
             self.serial.write(speed.encode('utf-8'))
-
-    # def set__pwm_speed_total(self):
-    #     self.pwm__speed_total.setText(str(self.pwm__speed.value()))
 
     @QtCore.Slot()
     def on(self):

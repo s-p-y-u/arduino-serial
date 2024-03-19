@@ -51,7 +51,7 @@ int brightness = 0;
 int read__d = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(500);
 // Пины D9 и D10 - 31.4 кГц
   TCCR1A = 0b00000001;  // 8bit
@@ -110,7 +110,7 @@ void loop() {
         break;
       case 10:
         analogWrite(led__d10, ints[1]);
-        // Serial.print("led__d10");
+        // Serial.print(analogRead(led__d10)/4);
         break;
       case 12:
         digitalWrite(led__d12, ints[1]);
