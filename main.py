@@ -19,8 +19,53 @@ class MyWidget(QtWidgets.QWidget):
 
         self.ports = []
         self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
-        self.color = ('0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
-                      '0,255,255','0,128,128','0,0,255','0,0,128')
+                        
+        # self.color = ('0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
+        #               '0,255,255','0,128,128','0,0,255','0,0,128')
+
+        self.colors=[]
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},0,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,0,{i}")
+
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},50,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},50")
+        for i in range(50, 255, 50):
+            self.colors.append(f"50,0,{i}")
+
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},100,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},100")
+        for i in range(50, 255, 50):
+            self.colors.append(f"100,0,{i}")   
+
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},150,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},150")
+        for i in range(50, 255, 50):
+            self.colors.append(f"150,0,{i}")
+
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},200,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},200")
+        for i in range(50, 255, 50):
+            self.colors.append(f"200,0,{i}")  
+
+        for i in range(50, 255, 50):
+            self.colors.append(f"{i},250,0")
+        for i in range(50, 255, 50):
+            self.colors.append(f"0,{i},250")
+        for i in range(50, 255, 50):
+            self.colors.append(f"250,0,{i}")              
+        print(len(self.colors))
 
         self.serial__ports = QSerialPortInfo.availablePorts()       #получаем информацию о порте
         if(self.serial__ports):
@@ -50,19 +95,20 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.btn__port_connect)
 
         self.color__box = QtWidgets.QWidget()
-        self.color__box.setMaximumHeight(120)
-        self.color__box.setMaximumWidth(220)
+        # self.color__box.setMaximumHeight(120)
+        # self.color__box.setMaximumWidth(220)
         self.color__grid_layout = QtWidgets.QGridLayout()
         self.color__grid_layout.setVerticalSpacing(0)
         self.color__grid_layout.setHorizontalSpacing(0)
         index = 0
-        for row in range(2):
-            for col in range(6):
-                set__color = self.color[index]
+        # key = list(self.colors__dict.keys())
+        # val = list(self.colors__dict.values())
+        for row in range(6):
+            for col in range(15):
                 color__btn = QtWidgets.QPushButton()
-                color__btn.setObjectName(f"color №{index}")
+                color__btn.setObjectName(f"{self.colors[index]}")
                 color__btn.clicked.connect(self.testtt)
-                color__btn.setStyleSheet(f"background-color:rgb({set__color});max-width:30px;max-height:30px; border:none; border-radius:3px")
+                color__btn.setStyleSheet(f"background-color:rgb({self.colors[index]});max-width:30px;max-height:30px; border:none; border-radius:3px")
                 self.color__grid_layout.addWidget(color__btn, row, col)
                 index += 1
         self.color__box.setLayout(self.color__grid_layout)
