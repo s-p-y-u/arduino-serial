@@ -47,8 +47,12 @@ VIN		Пин питания
 #define led__d10 10
 #define led__d12 12
 
+int red = 0;
+int green = 0;
+int blue = 0;
+int white = 0;
 int brightness = 0;
-int read__d = 0;
+// int read__d = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -80,17 +84,20 @@ void loop() {
     int ints[24];
     data.parseInts(ints);
     // int am = data.split();
-    Serial.print(ints[0]);
+    // Serial.print(ints[0]);
     switch (ints[0]) {
       case 0:
-        analogWrite(led__red_d3,ints[1]);
-        analogWrite(led__green_d5,ints[2]);
-        analogWrite(led__blue_d6,ints[3]);
-        analogWrite(led__white_d11,ints[4]);
         brightness = ints[5];
-        // int res = 0;
-        // if(led__red_d9,ints[1]) res = 1;
-        // Serial.print(res);
+        red = int((ints[1]*brightness)/100);
+        green = int((ints[2]*brightness)/100);
+        blue = int((ints[3]*brightness)/100);
+        white = int((ints[4]*brightness)/100);
+        analogWrite(led__red_d3,red);
+        analogWrite(led__green_d5,green);
+        analogWrite(led__blue_d6,blue);
+        analogWrite(led__white_d11,white);
+        // Serial.print(red);
+        // Serial.print(brightness);
         break;
       case 2:
         digitalWrite(led__d2, ints[1]);
@@ -121,6 +128,4 @@ void loop() {
         break;  
     }
   }
-  // delay(1000);
-  // Serial.print("text\r\n");
 }

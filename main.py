@@ -18,54 +18,15 @@ class MyWidget(QtWidgets.QWidget):
         super().__init__()
 
         self.ports = []
-        self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')
-                        
-        # self.color = ('0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
-        #               '0,255,255','0,128,128','0,0,255','0,0,128')
+        self.speeds = ('1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200')                
+        self.colors = ['0,0,0','255,255,255','255,0,255','128,0,128','255,0,0','128,0,0','255,255,0','0,255,0','0,128,0',
+                      '0,255,255','0,128,128','0,0,255','0,0,128']
 
-        self.colors=[]
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},0,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,0,{i}")
-
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},50,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},50")
-        for i in range(50, 255, 50):
-            self.colors.append(f"50,0,{i}")
-
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},100,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},100")
-        for i in range(50, 255, 50):
-            self.colors.append(f"100,0,{i}")   
-
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},150,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},150")
-        for i in range(50, 255, 50):
-            self.colors.append(f"150,0,{i}")
-
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},200,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},200")
-        for i in range(50, 255, 50):
-            self.colors.append(f"200,0,{i}")  
-
-        for i in range(50, 255, 50):
-            self.colors.append(f"{i},250,0")
-        for i in range(50, 255, 50):
-            self.colors.append(f"0,{i},250")
-        for i in range(50, 255, 50):
-            self.colors.append(f"250,0,{i}")              
-        print(len(self.colors))
+        self.red = 0
+        self.green = 0
+        self.blue = 0
+        self.w = 0 
+        self.brightness = 0
 
         self.serial__ports = QSerialPortInfo.availablePorts()       #получаем информацию о порте
         if(self.serial__ports):
@@ -95,30 +56,47 @@ class MyWidget(QtWidgets.QWidget):
         self.layout__connect.addWidget(self.btn__port_connect)
 
         self.color__box = QtWidgets.QWidget()
-        # self.color__box.setMaximumHeight(120)
-        # self.color__box.setMaximumWidth(220)
+        self.color__box.setMaximumHeight(400)
+        self.color__box.setMaximumWidth(200)
+        self.color__box_v_layout = QtWidgets.QVBoxLayout()
         self.color__grid_layout = QtWidgets.QGridLayout()
-        self.color__grid_layout.setVerticalSpacing(0)
-        self.color__grid_layout.setHorizontalSpacing(0)
+        self.color__grid_layout.setVerticalSpacing(5)
+        self.color__grid_layout.setHorizontalSpacing(5)
         index = 0
         # key = list(self.colors__dict.keys())
         # val = list(self.colors__dict.values())
-        for row in range(6):
-            for col in range(15):
+        for row in range(3):
+            for col in range(4):
                 color__btn = QtWidgets.QPushButton()
                 color__btn.setObjectName(f"{self.colors[index]}")
-                color__btn.clicked.connect(self.testtt)
-                color__btn.setStyleSheet(f"background-color:rgb({self.colors[index]});max-width:30px;max-height:30px; border:none; border-radius:3px")
+                color__btn.clicked.connect(self.color__set)
+                color__btn.setStyleSheet(f"background-color:rgb({self.colors[index]});max-width:30px;max-height:30px;width:30px;height:30px; border:none; border-radius:3px")
                 self.color__grid_layout.addWidget(color__btn, row, col)
                 index += 1
-        self.color__box.setLayout(self.color__grid_layout)
+        
+        self.color__brightness_label = QtWidgets.QLabel("Яркость")
+        self.color__brightness_slider = QtWidgets.QSlider(orientation=QtCore.Qt.Horizontal)
+        self.color__brightness_slider.setRange(0, 100)
+        self.color__brightness_slider.setValue(100)
+        self.color__brightness_slider.valueChanged.connect(self.f_color__brightness)
 
+        self.color__extended = QtWidgets.QPushButton("color__extended")
+        self.color__extended.setObjectName("color__extended")
+        self.color__extended.clicked.connect(self.color__set)
+        
+        self.color__extended_layout = QtWidgets.QVBoxLayout()
+        self.color__extended_layout.addWidget(self.color__extended)
+        self.color__extended_layout.addWidget(self.color__brightness_label)
+        self.color__extended_layout.addWidget(self.color__brightness_slider)
+        self.color__box_v_layout.addLayout(self.color__grid_layout)
+        self.color__box_v_layout.addLayout(self.color__extended_layout)
+        self.color__box.setLayout(self.color__box_v_layout)
 
         self.btn__box = QtWidgets.QWidget()
         self.btn__box.setMaximumHeight(40)
         self.btn__layout_h = QtWidgets.QHBoxLayout()
-        self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
-        self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
+        # self.pwm__led_rgbw = QtWidgets.QPushButton("pwm__led_rgbw")
+        # self.pwm__led_rgbw.setObjectName("pwm__led_rgbw")
         self.btn__led_4 = QtWidgets.QPushButton("on4")
         self.btn__led_4.setObjectName("4")
         self.btn__led_4.setCheckable(True)
@@ -128,7 +106,7 @@ class MyWidget(QtWidgets.QWidget):
         self.btn__led_9 = QtWidgets.QPushButton("on9")
         self.btn__led_9.setObjectName("9")
         self.btn__led_9.setCheckable(True)
-        self.btn__layout_h.addWidget(self.pwm__led_rgbw)
+        # self.btn__layout_h.addWidget(self.pwm__led_rgbw)
         self.btn__layout_h.addWidget(self.btn__led_4)
         self.btn__layout_h.addWidget(self.btn__led_8)
         self.btn__layout_h.addWidget(self.btn__led_9)
@@ -153,13 +131,14 @@ class MyWidget(QtWidgets.QWidget):
         self.pwm__layout.addWidget(self.pwm__speed_total)
         self.pwm__box.setLayout(self.pwm__layout)
 
-        self.text = QtWidgets.QLabel(f"{self.ports}", alignment=QtCore.Qt.AlignCenter)
-
+        # self.text = QtWidgets.QLabel(f"{self.ports}", alignment=QtCore.Qt.AlignCenter)
+        # self.text = QtWidgets.QLabel("start", alignment=QtCore.Qt.AlignCenter)
         # self.color__picker = QtWidgets.QColorDialog()
 
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addLayout(self.layout__connect)
-        self.layout.addWidget(self.text)
+        self.layout.addWidget(QtWidgets.QSplitter(QtCore.Qt.Vertical, self))
+        # self.layout.addWidget(self.text)
         # self.layout.addWidget(self.color__picker)
         self.layout.addWidget(self.color__box)
         self.layout.addWidget(self.btn__box)
@@ -171,7 +150,8 @@ class MyWidget(QtWidgets.QWidget):
         # self.layout.addWidget(self.btn__led_11)
 
 
-        self.pwm__led_rgbw.clicked.connect(self.pwm__led_rgbw_set_color)
+        # self.pwm__led_rgbw.clicked.connect(self.color__set)
+        
         # self.btn__led_3.clicked.connect(self.on)
         self.btn__led_4.clicked.connect(self.on)
         # self.btn__led_5.clicked.connect(self.on)
@@ -198,24 +178,53 @@ class MyWidget(QtWidgets.QWidget):
         self.serial.readyRead.connect(self.ser__read)                       #при событии в порте вызываем функцию
         # self.serial.setDataTerminalReady(True)   
 
-    def pwm__led_rgbw_set_color(self):
+    def color__set(self):
         name = str(self.sender().objectName())
-        if(name == "pwm__led_rgbw"):
+        set__data = ""
+        self.brightness = self.color__brightness_slider.value()
+        if(name == "color__extended"):
             color = QtWidgets.QColorDialog()
             rgb = color.getColor().getRgb()
-            # print(rgb)
-            r = rgb[0]
-            g = rgb[1]
-            b = rgb[2]
-            w = 0
-            if(r == 255 and g == 255 and b == 255):
-                w = 255
-                r = 0
-                g = 0
-                b = 0
-            set__data = f"0,{r},{g},{b},{w},100;" 
-            self.serial.write(set__data.encode('utf-8'))
-            self.text.setText(f"{set__data}")
+            if(rgb[0] == 0 and rgb[1] == 0 and rgb[2] == 0): return
+            self.red = rgb[0]
+            self.green = rgb[1]
+            self.blue = rgb[2]
+            if(self.red == 255 and self.green == 255 and self.blue == 255):
+                self.red = 0
+                self.green = 0
+                self.blue = 0
+                self.w = 255
+                set__data = f"0,{self.red},{self.green},{self.blue},{self.w},{self.brightness};" 
+                self.serial.write(set__data.encode('utf-8'))
+                self.color__extended.setStyleSheet(f"background-color: rgb(255,255,255)")
+            else:
+                self.w = 0
+                set__data = f"0,{self.red},{self.green},{self.blue},{self.w},{self.brightness};"
+                self.serial.write(set__data.encode('utf-8'))
+                self.color__extended.setStyleSheet(f"background-color: rgb({self.red},{self.green},{self.blue})")
+        else:
+            rgb = name.split(',')
+            self.red = int(rgb[0])
+            self.green = int(rgb[1])
+            self.blue = int(rgb[2])
+            if(self.red == 255 and self.green == 255 and self.blue == 255):
+                self.red = 0
+                self.green = 0
+                self.blue = 0
+                self.w = 255
+                set__data = f"0,{self.red},{self.green},{self.blue},{self.w},{self.brightness};"
+                self.serial.write(set__data.encode('utf-8')) 
+                self.color__extended.setStyleSheet(f"background-color: rgb(255,255,255)")
+            else:
+                self.w = 0
+                set__data = f"0,{self.red},{self.green},{self.blue},{self.w},{self.brightness};"
+                self.serial.write(set__data.encode('utf-8'))
+                self.color__extended.setStyleSheet(f"background-color: rgb({self.red},{self.green},{self.blue})")
+
+    def f_color__brightness(self):
+        self.brightness = self.color__brightness_slider.value()
+        set__data = f"0,{self.red},{self.green},{self.blue},{self.w},{self.brightness};"
+        self.serial.write(set__data.encode('utf-8'))
 
     def set__pwm(self):
         btn__checked = self.sender().isChecked()
@@ -252,10 +261,16 @@ class MyWidget(QtWidgets.QWidget):
         # temp__text = self.text.text()
         # self.text.setText(f"{temp__text} -> {data}")
         # print(data)
-        self.text.setText(f"{data}")
+        # self.text.setText(f"{data}")
+        print(data)
     
-    def testtt(self):
-        print(self.sender().objectName())
+    # def testtt(self):
+    #     print(self.sender().objectName())
+    #     rgb = self.sender().objectName().split(',')
+    #     r = rgb[0]
+    #     g = rgb[1]
+    #     b = rgb[2]
+    #     self.color__extended.setStyleSheet(f"background-color: rgb({r},{g},{b})")
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
